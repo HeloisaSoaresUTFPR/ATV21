@@ -1,22 +1,8 @@
-/*  1- Leia do arquivo "emails.txt" uma lista de N endereços de e-mail,
- um por linha (para testar)
-2- Leia do arquivo "titulo.txt" o título da mensagem que será enviada
-3- Leia do arquivo "corpo.txt" o corpo da mensagem que será enviada
-4- Para cada um dos N endereços:
-    4.1 - Envie uma única mensagem de e-mail por vez, usando o título e o corpo lido
-    4.2 - aguarde 2 segundos antes de enviar a próxima mensagem (use o waitFor da aula)
-
-- Utilize async-await
-- Crie uma conta de teste em https://ethereal.email para usar com o nodemailer
-- Crie um projeto (npm init) e adicione as dependências necessárias.
-- Envie aqui um arquivo .zip com o projeto ou o link para o projeto no github.  */
-
-
 const nodemailer = require('nodemailer');
 const fs = require('fs').promises;
 
 async function lerEmail() {
-    
+
     let arquivo = await fs.readFile('email.txt', 'utf-8')
     console.log(arquivo);
     return arquivo.split('\n');
@@ -24,25 +10,43 @@ async function lerEmail() {
 }
 
 async function lerTitulo() {
-    
+
     let arquivo = await fs.readFile('titulo.txt', 'utf-8')
     console.log(arquivo);
-    return arquivo.split('\n');
+    return arquivo
 
 }
 
 async function lerCorpo() {
-    
+
     let arquivo = await fs.readFile('corpo.txt', 'utf-8')
     console.log(arquivo);
-    return arquivo.split('\n');
+    return arquivo
 
 }
-    
+//Para cada um dos N endereços:
+//4.1 - Envie uma única mensagem de e-mail por vez, usando o título e o corpo lido
+//4.2 - aguarde 2 segundos antes de enviar a próxima mensagem /
+//(use o waitFor da aula)
+
+async function mensagem(email, corpo, titulo, transporter) {
+
+    const info = await transporter.sendMail({
+
+        from: 'Alfredo Russel <alfredo.russel56@ethereal.email>',
+        to: email,
+        subject: titulo,
+        text: corpo
+
+    })
+    return info;
+}
+
 async function main() {
-    lerEmail();
-    lerTitulo();
-    lerCorpo();
+    const emails = await lerEmail();
+    const titulo = await lerTitulo();
+    const corpo = await lerCorpo()
+
     const transporter = nodemailer.createTransport({
 
         host: 'smtp.ethereal.email',
@@ -52,17 +56,17 @@ async function main() {
             pass: 'T2CB4WEBkc2jkfJ8Ev'
         }
     });
+    emails.forEach(email => {
+        (async () => {
+            const msg = await mensagem(email, corpo, titulo, transporter);
+            console.log('Message ID:', msg.messageId)
 
+            await delay(50);
 
+        })
 
-    const info = await transporter.sendMail({
-        from: 'Alfredo Russel <alfredo.russel56@ethereal.email>',
-        to: 'helosoarescosta@gmail.com',
-        subject: 'Hello from Alfredo',
-        text: 'OLAAAAAAAAAAAA!.'
     })
 
-    console.log('Message ID:', info.messageId),
-        console.log('Message URL', nodemailer.getTestMessageUrl(info));
+
 }
 main().catch(console.log);
