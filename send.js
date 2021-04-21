@@ -30,22 +30,27 @@ async function lerCorpo() {
 //(use o waitFor da aula)
 
 async function mensagem(email, corpo, titulo, transporter) {
+    setTimeout(() => {
+        
+        const info =  transporter.sendMail({
 
-    const info = await transporter.sendMail({
+            from: 'Alfredo Russel <alfredo.russel56@ethereal.email>',
+            to: email,
+            subject: titulo,
+            text: corpo
+    
+        })
+    
+       console.log(info.messageId);
+    }, 2000)
 
-        from: 'Alfredo Russel <alfredo.russel56@ethereal.email>',
-        to: email,
-        subject: titulo,
-        text: corpo
-
-    })
-    return info;
 }
 
 async function main() {
     const emails = await lerEmail();
     const titulo = await lerTitulo();
-    const corpo = await lerCorpo()
+    const corpo = await lerCorpo();
+    
 
     const transporter = nodemailer.createTransport({
 
@@ -56,17 +61,10 @@ async function main() {
             pass: 'T2CB4WEBkc2jkfJ8Ev'
         }
     });
+
     emails.forEach(email => {
-        (async () => {
-            const msg = await mensagem(email, corpo, titulo, transporter);
-            console.log('Message ID:', msg.messageId)
-
-            await delay(50);
-
-        })
-
+        mensagem(email, corpo, titulo, transporter)
+        
     })
-
-
 }
 main().catch(console.log);
