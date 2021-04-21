@@ -19,11 +19,30 @@ async function lerEmail() {
     
     let arquivo = await fs.readFile('email.txt', 'utf-8')
     console.log(arquivo);
+    return arquivo.split('\n');
+
+}
+
+async function lerTitulo() {
+    
+    let arquivo = await fs.readFile('titulo.txt', 'utf-8')
+    console.log(arquivo);
+    return arquivo.split('\n');
+
+}
+
+async function lerCorpo() {
+    
+    let arquivo = await fs.readFile('corpo.txt', 'utf-8')
+    console.log(arquivo);
+    return arquivo.split('\n');
 
 }
     
 async function main() {
     lerEmail();
+    lerTitulo();
+    lerCorpo();
     const transporter = nodemailer.createTransport({
 
         host: 'smtp.ethereal.email',
